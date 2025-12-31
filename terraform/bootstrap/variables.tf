@@ -10,10 +10,12 @@ variable "project_name" {
 
 variable "github_org" {
   type = string
+  default = "Qday12"
 }
 
 variable "github_repo" {
   type = string
+  default = "k8s_payment_app"
 }
 
 variable "repositories" {
