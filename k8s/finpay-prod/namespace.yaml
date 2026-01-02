@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: finpay-prod
+  labels:
+    app.kubernetes.io/name: finpay
+    app.kubernetes.io/instance: finpay-prod
+    app.kubernetes.io/managed-by: kubectl
+    environment: production
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: finpay-prod-quota
+  namespace: finpay-prod
+  labels:
+    app.kubernetes.io/name: finpay
+    app.kubernetes.io/instance: finpay-prod
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    pods: "20"
+    services: "10"
+    configmaps: "10"
+    secrets: "10"
+    persistentvolumeclaims: "5"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: finpay-prod-limits
+  namespace: finpay-prod
+  labels:
+    app.kubernetes.io/name: finpay
+    app.kubernetes.io/instance: finpay-prod
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 256Mi
+      max:
+        cpu: "2"
+        memory: 2Gi
+      min:
+        cpu: 50m
+        memory: 64Mi
