@@ -91,7 +91,7 @@ jobs:
           push: true
           tags: |
             ${{ env.ECR_REGISTRY }}/${{ env.PROJECT_NAME }}/payment-api:${{ github.sha }}
-            ${{ env.ECR_REGISTRY }}/${{ env.PROJECT_NAME }}/payment-api:latest
+            ${{ env.ECR_REGISTRY }}/${{ env.PROJECT_NAME }}/payment-api:main-${{ github.run_number }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -173,6 +173,6 @@ jobs:
           push: true
           tags: |
             ${{ env.ECR_REGISTRY }}/${{ env.PROJECT_NAME }}/payment-worker:${{ github.sha }}
-            ${{ env.ECR_REGISTRY }}/${{ env.PROJECT_NAME }}/payment-worker:latest
+            ${{ env.ECR_REGISTRY }}/${{ env.PROJECT_NAME }}/payment-worker:main-${{ github.run_number }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
