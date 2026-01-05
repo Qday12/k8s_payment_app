@@ -1,0 +1,114 @@
+<mxfile host="65bd71144e">
+    <diagram name="Page-1" id="k8s-architecture">
+        <mxGraphModel dx="1950" dy="1519" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="#333333" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="eks-cluster" value="EKS Cluster: finpay-eks-cluster" style="swimlane;html=1;fillColor=#e3c800;fontColor=#FFFFFF;strokeColor=#B09500;align=center;whiteSpace=wrap;startSize=30;" parent="1" vertex="1">
+                    <mxGeometry x="-20" y="-20" width="1200" height="900" as="geometry"/>
+                </mxCell>
+                <mxCell id="prod-namespace" value="Namespace: production" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f0a30a;fontColor=#FFFFFF;strokeColor=#BD7000;align=center;startSize=30;" parent="eks-cluster" vertex="1">
+                    <mxGeometry x="20" y="40" width="740" height="820" as="geometry"/>
+                </mxCell>
+                <mxCell id="ingress-section" value="Ingress Layer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#FFFFFF;strokeColor=#2D7600;align=center;startSize=30;" parent="prod-namespace" vertex="1">
+                    <mxGeometry x="20" y="40" width="500" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="alb-ingress" value="&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;AWS ALB Ingress&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;api.finpay.com&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;/payments -&amp;gt; payment-api:8080&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;strokeColor=#005700;fontColor=#FFFFFF;" parent="ingress-section" vertex="1">
+                    <mxGeometry x="20" y="40" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="alb-controller-note" value="&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;Created by AWS&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;Load Balancer Controller&lt;/font&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FFFFFF;" parent="ingress-section" vertex="1">
+                    <mxGeometry x="260" y="50" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="services-section" value="Services (ClusterIP)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#FFFFFF;strokeColor=#006EAF;align=center;startSize=30;" parent="prod-namespace" vertex="1">
+                    <mxGeometry x="20" y="180" width="500" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="api-service" value="&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;payment-api-service&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;ClusterIP:8080&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#FFFFFF;" parent="services-section" vertex="1">
+                    <mxGeometry x="20" y="40" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="worker-service" value="&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;payment-worker-service&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;ClusterIP:8090&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#FFFFFF;" parent="services-section" vertex="1">
+                    <mxGeometry x="280" y="40" width="180" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployments-section" value="Deployments (on Application Node Group)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#76608a;fontColor=#FFFFFF;strokeColor=#432D57;align=center;startSize=30;" parent="prod-namespace" vertex="1">
+                    <mxGeometry x="20" y="320" width="700" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="api-deployment" value="&lt;b&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;payment-api&lt;/font&gt;&lt;/b&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;Replicas: 2-8 (HPA)&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;CPU: 250m, Mem: 512Mi&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9673a6;strokeColor=#432D57;fontColor=#FFFFFF;" parent="deployments-section" vertex="1">
+                    <mxGeometry x="20" y="40" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="api-pod-more" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;...&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FFFFFF;" parent="deployments-section" vertex="1">
+                    <mxGeometry x="120" y="120" width="30" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="worker-deployment" value="&lt;b&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;payment-worker&lt;/font&gt;&lt;/b&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;Replicas: 2-6 (HPA)&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;CPU: 500m, Mem: 512Mi&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9673a6;strokeColor=#432D57;fontColor=#FFFFFF;" parent="deployments-section" vertex="1">
+                    <mxGeometry x="220" y="40" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="worker-pod-more" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;...&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FFFFFF;" parent="deployments-section" vertex="1">
+                    <mxGeometry x="320" y="120" width="30" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="hpa-section" value="Horizontal Pod Autoscalers" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#FFFFFF;strokeColor=#C73500;align=center;startSize=30;" parent="prod-namespace" vertex="1">
+                    <mxGeometry x="20" y="540" width="700" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="api-hpa" value="&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;payment-api-hpa&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;Min:2, Max:8&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;CPU:70%, Mem:80%&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e07000;strokeColor=#C73500;fontColor=#FFFFFF;" parent="hpa-section" vertex="1">
+                    <mxGeometry x="20" y="40" width="140" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="worker-hpa" value="&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;payment-worker-hpa&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;Min:2, Max:6&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; color: rgb(255, 255, 255);&quot;&gt;CPU:75%&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e07000;strokeColor=#C73500;fontColor=#FFFFFF;" parent="hpa-section" vertex="1">
+                    <mxGeometry x="220" y="40" width="160" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="config-section" value="Configuration" style="swimlane;whiteSpace=wrap;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;align=center;startSize=30;" parent="prod-namespace" vertex="1">
+                    <mxGeometry x="20" y="660" width="500" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="configmap" value="&lt;b&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;ConfigMap&lt;/font&gt;&lt;/b&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;payment-config&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;APP_ENV, LOG_LEVEL&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;DB_URL&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;" parent="config-section" vertex="1">
+                    <mxGeometry x="20" y="40" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="secret" value="&lt;b&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;Secret&lt;/font&gt;&lt;/b&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;payment-db-secret&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;DB_USER&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;DB_PASSWORD&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;(from AWS Secrets Manager)&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;" parent="config-section" vertex="1">
+                    <mxGeometry x="220" y="40" width="180" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="external-rds" value="&lt;font style=&quot;&quot;&gt;External: RDS PostgreSQL&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Multi-AZ in DB Subnets&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;10.0.20.0/24, 10.0.21.0/24&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Port: 5432&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e51400;strokeColor=#B20000;fontColor=#FFFFFF;" parent="eks-cluster" vertex="1">
+                    <mxGeometry x="818" y="377" width="380" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow-worker-rds" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#ff3333;fontColor=#FFFFFF;" parent="eks-cluster" source="worker-deployment" target="external-rds" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="420" y="437"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow-api-rds" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=l;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#ff3333;fontColor=#FFFFFF;" parent="eks-cluster" source="api-deployment" target="external-rds" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="200" y="540"/>
+                            <mxPoint x="700" y="540"/>
+                            <mxPoint x="700" y="397"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="external-alb-controller" value="&lt;font style=&quot;&quot;&gt;External: AWS Load Balancer Controller&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Runs in kube-system namespace&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Creates and manages AWS ALB&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#FFFFFF;" parent="eks-cluster" vertex="1">
+                    <mxGeometry x="800" y="94" width="380" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="user" value="&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;User&lt;/font&gt;" style="shape=actor;whiteSpace=wrap;html=1;fillColor=#008a00;strokeColor=#005700;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="-239" y="90" width="60" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow-user-ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#33ff33;fontColor=#FFFFFF;" parent="1" source="user" target="alb-ingress" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="-156" y="130"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow-ingress-api-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#3399ff;fontColor=#FFFFFF;" parent="1" source="alb-ingress" target="api-service" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow-api-svc-deploy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#cc99ff;fontColor=#FFFFFF;" parent="1" source="api-service" target="api-deployment" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow-worker-svc-deploy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#cc99ff;fontColor=#FFFFFF;" parent="1" source="worker-service" target="worker-deployment" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow-hpa-api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#ff9933;dashed=1;fontColor=#FFFFFF;" parent="1" source="api-hpa" target="api-deployment" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow-hpa-worker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#ff9933;dashed=1;fontColor=#FFFFFF;" parent="1" source="worker-hpa" target="worker-deployment" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
