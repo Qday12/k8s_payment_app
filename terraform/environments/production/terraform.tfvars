@@ -11,7 +11,7 @@ private_subnet_cidrs  = ["10.0.10.0/24", "10.0.11.0/24"]
 database_subnet_cidrs = ["10.0.20.0/24", "10.0.21.0/24"]
 
 # EKS Configuration
-eks_cluster_version = "1.28"
+eks_cluster_version = "1.29"
 
 # Application Node Group
 application_node_instance_types = ["t3.large"]
@@ -29,7 +29,7 @@ system_node_max_size       = 2
 # RDS Configuration
 database_name               = "paymentdb"
 db_master_username          = "dbadmin"
-rds_engine_version          = "16.1"
+rds_engine_version          = "16"
 rds_instance_class          = "db.t3.medium"
 rds_allocated_storage       = 100
 rds_storage_type            = "gp3"

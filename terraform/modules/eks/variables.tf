@@ -100,25 +100,25 @@ variable "system_node_max_size" {
 variable "vpc_cni_addon_version" {
   description = "Version of VPC CNI add-on"
   type        = string
-  default     = "v1.15.1-eksbuild.1"
+  default     = "v1.16.0-eksbuild.1"
 }
 
 variable "coredns_addon_version" {
   description = "Version of CoreDNS add-on"
   type        = string
-  default     = "v1.10.1-eksbuild.6"
+  default     = "v1.11.1-eksbuild.4"
 }
 
 variable "kube_proxy_addon_version" {
   description = "Version of kube-proxy add-on"
   type        = string
-  default     = "v1.28.2-eksbuild.2"
+  default     = "v1.29.0-eksbuild.1"
 }
 
 variable "ebs_csi_addon_version" {
   description = "Version of EBS CSI driver add-on"
   type        = string
-  default     = "v1.25.0-eksbuild.1"
+  default     = "v1.28.0-eksbuild.1"
 }
 
 variable "tags" {

@@ -15,7 +15,9 @@ resource "aws_db_instance" "main" {
   allocated_storage = var.allocated_storage
   storage_type      = var.storage_type
   storage_encrypted = true
-  iops              = var.storage_type == "gp3" ? var.iops : null
+  # IOPS can only be specified for storage >= 400GB
+  # GP3 provides 3000 IOPS baseline by default for any size
+  iops = var.storage_type == "gp3" && var.allocated_storage >= 400 ? var.iops : null
 
   db_name  = var.database_name
   username = var.master_username
@@ -71,11 +73,14 @@ resource "aws_db_parameter_group" "main" {
   name   = "${var.project_name}-db-params"
   family = var.parameter_group_family
 
+  # Static parameter - requires database restart
   parameter {
-    name  = "shared_preload_libraries"
-    value = "pg_stat_statements"
+    name         = "shared_preload_libraries"
+    value        = "pg_stat_statements"
+    apply_method = "pending-reboot"
   }
 
+  # Dynamic parameters - applied immediately
   parameter {
     name  = "log_statement"
     value = "all"
