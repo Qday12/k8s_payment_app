@@ -1,5 +1,6 @@
 .A_local/
 CLAUDE.md
+.claude
 
 #terraform
 *.tfstate

@@ -35,8 +35,8 @@ jobs:
       - name: Build payment-api image
         uses: docker/build-push-action@v5
         with:
-          context: ./payment-api
-          file: ./payment-api/Dockerfile
+          context: ./app/payment-api
+          file: ./app/payment-api/Dockerfile
           push: false
           load: true
           tags: payment-api:${{ github.sha }}
@@ -86,8 +86,8 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
-          context: ./payment-api
-          file: ./payment-api/Dockerfile
+          context: ./app/payment-api
+          file: ./app/payment-api/Dockerfile
           push: true
           tags: |
             ${{ env.ECR_REGISTRY }}/${{ env.PROJECT_NAME }}/payment-api:${{ github.sha }}
@@ -117,8 +117,8 @@ jobs:
       - name: Build payment-worker image
         uses: docker/build-push-action@v5
         with:
-          context: ./payment-worker
-          file: ./payment-worker/Dockerfile
+          context: ./app/payment-worker
+          file: ./app/payment-worker/Dockerfile
           push: false
           load: true
           tags: payment-worker:${{ github.sha }}
@@ -168,8 +168,8 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
-          context: ./payment-worker
-          file: ./payment-worker/Dockerfile
+          context: ./app/payment-worker
+          file: ./app/payment-worker/Dockerfile
           push: true
           tags: |
             ${{ env.ECR_REGISTRY }}/${{ env.PROJECT_NAME }}/payment-worker:${{ github.sha }}
