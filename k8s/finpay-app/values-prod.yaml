@@ -1,0 +1,23 @@
+
+# Production Ingress Configuration
+ingress:
+  # ACM certificate ARN - OPTIONAL: Leave empty for HTTP-only (testing)
+  # For production HTTPS, create ACM certificate first (see README)
+  certificateArn: ""
+  # Public subnet IDs from Terraform outputs
+  subnets: "subnet-0970c2e679a92456a,subnet-0fbb04d83b70ce3e7"
+
+
+# Production Configuration
+config:
+  dbUrl: "jdbc:postgresql://finpay-db.c144aqq2u663.eu-central-1.rds.amazonaws.com:5432/paymentdb"
+
+# IMPORTANT: In production, use AWS Secrets Manager or External Secrets Operator
+secret:
+  # Set these via: --set secret.dbUser=xxx --set secret.dbPassword=xxx
+  dbUser: ""
+  dbPassword: ""
+
+# Enable resource quotas in production
+resourceQuota:
+  enabled: true

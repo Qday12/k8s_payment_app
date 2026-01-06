@@ -27,17 +27,12 @@ VPC: 10.0.0.0/16
 - **Node Groups:**
 
   **Application Node Group:**
-  - Instance: t3.large (2 vCPU, 8GB RAM)
+  - Instance: t3.medium
   - Min: 2, Max: 6
   - Spread across both AZs
   - HPA (Horizontal Pod Autoscaler) enabled
   - Runs payment-api and payment-worker pods
 
-  **System Node Group:**
-  - Instance: t3.medium (2 vCPU, 4GB RAM)
-  - Min: 2 (1 per AZ)
-  - Spread across both AZs
-  - Runs cluster system components (monitoring, ingress controller, etc.)
 
 ### 2. RDS PostgreSQL
 - **Engine:** PostgreSQL 16

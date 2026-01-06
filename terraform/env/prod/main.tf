@@ -1,44 +1,7 @@
-# Main Terraform Configuration for FinPay Payment Platform
-# This file orchestrates all infrastructure modules
-
-terraform {
-  required_version = ">= 1.5.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.5"
-    }
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~> 4.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = var.aws_region
-
-  default_tags {
-    tags = {
-      Project     = var.project_name
-      Environment = var.environment
-      ManagedBy   = "Terraform"
-    }
-  }
-}
-
 # Data source for current AWS account
 data "aws_caller_identity" "current" {}
+#gives acces to the current account ID, user arn, etc.
 
-# Data source for availability zones
-data "aws_availability_zones" "available" {
-  state = "available"
-}
 
 locals {
   cluster_name = "${var.project_name}-${var.environment}-eks"
@@ -49,7 +12,7 @@ locals {
     ManagedBy   = "Terraform"
   }
 }
-
+##########################################################
 # VPC Module
 module "vpc" {
   source = "../../modules/vpc"
@@ -109,12 +72,6 @@ module "eks" {
   application_node_min_size       = var.application_node_min_size
   application_node_max_size       = var.application_node_max_size
 
-  # System node group settings
-  system_node_instance_types = var.system_node_instance_types
-  system_node_desired_size   = var.system_node_desired_size
-  system_node_min_size       = var.system_node_min_size
-  system_node_max_size       = var.system_node_max_size
-
   tags = local.common_tags
 
   depends_on = [module.iam, module.security_groups]
@@ -162,7 +119,6 @@ module "secrets" {
   payment_worker_base_url = var.payment_worker_base_url
   worker_cpu_load_ms      = var.worker_cpu_load_ms
 
-  rotation_days  = var.secrets_rotation_days
   create_kms_key = var.create_kms_key
 
   tags = local.common_tags

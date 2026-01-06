@@ -34,6 +34,8 @@ resource "aws_iam_role_policy_attachment" "eks_vpc_resource_controller" {
   role       = aws_iam_role.eks_cluster.name
 }
 
+##################################################################################
+
 # EKS Node Role
 resource "aws_iam_role" "eks_nodes" {
   name = "${var.project_name}-eks-node-role"
@@ -103,6 +105,8 @@ resource "aws_iam_role_policy_attachment" "node_cloudwatch_logs" {
   policy_arn = aws_iam_policy.node_cloudwatch_logs.arn
   role       = aws_iam_role.eks_nodes.name
 }
+
+###################################################################################
 
 # OIDC Provider for IRSA (IAM Roles for Service Accounts)
 data "tls_certificate" "eks" {
@@ -283,7 +287,7 @@ resource "aws_iam_role" "alb_controller" {
   )
 }
 
-# Policy for ALB Controller (simplified - use AWS managed policy in production)
+# Policy for ALB Controller
 resource "aws_iam_policy" "alb_controller" {
   count       = var.enable_irsa ? 1 : 0
   name        = "${var.project_name}-alb-controller-policy"

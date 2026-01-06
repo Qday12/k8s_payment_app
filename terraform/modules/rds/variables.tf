@@ -42,7 +42,7 @@ variable "storage_type" {
 variable "iops" {
   description = "IOPS for GP3 storage"
   type        = number
-  default     = 3000
+  default     = null
 }
 
 variable "multi_az" {

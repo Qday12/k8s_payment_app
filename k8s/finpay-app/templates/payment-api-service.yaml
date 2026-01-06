@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-api
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "finpay.labels" . | nindent 4 }}
+    app: payment-api
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: payment-api

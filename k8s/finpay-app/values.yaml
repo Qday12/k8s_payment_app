@@ -1,0 +1,71 @@
+# Default values for finpay-app
+
+# Global settings
+global:
+  namespace: prod
+  environment: prod
+
+iam:
+  paymentApiRoleArn: arn:aws:iam::408502715963:role/finpay-payment-api-role
+  paymentWorkerRoleArn: arn:aws:iam::408502715963:role/finpay-payment-worker-role
+# Payment API Configuration
+paymentApi:
+  replicaCount: 2
+
+  image:
+    repository: 408502715963.dkr.ecr.eu-central-1.amazonaws.com/finpay/payment-api
+    tag: main-13
+    pullPolicy: IfNotPresent
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+  autoscaling:
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+# Payment Worker Configuration
+paymentWorker:
+  replicaCount: 2
+
+  image:
+    repository: 408502715963.dkr.ecr.eu-central-1.amazonaws.com/finpay/payment-worker
+    tag: main-13
+    pullPolicy: IfNotPresent
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 1Gi
+
+  autoscaling:
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 75
+
+# Ingress Configuration (AWS ALB)
+ingress:
+  host: api.finpay.com
+  certificateArn: ""
+  subnets: ""
+
+# ConfigMap Configuration
+config:
+  appEnv: production
+  logLevel: INFO
+  dbUrl: ""
+
+# Secret Configuration
+secret:
+  dbUser: ""
+  dbPassword: ""

@@ -20,12 +20,6 @@ application_node_desired_size   = 2
 application_node_min_size       = 2
 application_node_max_size       = 6
 
-# System Node Group
-system_node_instance_types = ["t3.medium"]
-system_node_desired_size   = 2
-system_node_min_size       = 2
-system_node_max_size       = 2
-
 # RDS Configuration
 database_name               = "paymentdb"
 db_master_username          = "dbadmin"

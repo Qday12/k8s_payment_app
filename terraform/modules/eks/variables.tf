@@ -71,31 +71,6 @@ variable "application_node_max_size" {
   default     = 6
 }
 
-# System Node Group Variables
-variable "system_node_instance_types" {
-  description = "Instance types for system node group"
-  type        = list(string)
-  default     = ["t3.medium"]
-}
-
-variable "system_node_desired_size" {
-  description = "Desired number of system nodes"
-  type        = number
-  default     = 2
-}
-
-variable "system_node_min_size" {
-  description = "Minimum number of system nodes"
-  type        = number
-  default     = 2
-}
-
-variable "system_node_max_size" {
-  description = "Maximum number of system nodes"
-  type        = number
-  default     = 2
-}
-
 # EKS Add-on Versions
 variable "vpc_cni_addon_version" {
   description = "Version of VPC CNI add-on"

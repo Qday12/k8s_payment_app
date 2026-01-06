@@ -40,6 +40,16 @@ resource "aws_vpc_security_group_egress_rule" "alb_to_eks" {
   ip_protocol                  = "-1"
 }
 
+
+
+
+
+
+
+
+
+
+
 # EKS Nodes Security Group
 resource "aws_security_group" "eks_nodes" {
   name        = "${var.project_name}-eks-nodes-sg"
@@ -118,6 +128,14 @@ resource "aws_vpc_security_group_egress_rule" "control_plane_to_nodes" {
   referenced_security_group_id = aws_security_group.eks_nodes.id
   ip_protocol                  = "-1"
 }
+
+
+
+
+
+
+
+
 
 # RDS Security Group
 resource "aws_security_group" "rds" {

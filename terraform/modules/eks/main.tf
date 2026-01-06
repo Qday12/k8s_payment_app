@@ -46,7 +46,8 @@ resource "aws_eks_node_group" "application" {
   }
 
   labels = {
-    role = "application"
+    role       = "application"
+    node-group = "application"
   }
 
   tags = merge(
@@ -63,48 +64,6 @@ resource "aws_eks_node_group" "application" {
   ]
 }
 
-# System Node Group (for cluster system components)
-resource "aws_eks_node_group" "system" {
-  cluster_name    = aws_eks_cluster.main.name
-  node_group_name = "${var.cluster_name}-system-ng"
-  node_role_arn   = var.node_role_arn
-  subnet_ids      = var.private_subnet_ids
-
-  instance_types = var.system_node_instance_types
-  capacity_type  = "ON_DEMAND"
-
-  scaling_config {
-    desired_size = var.system_node_desired_size
-    min_size     = var.system_node_min_size
-    max_size     = var.system_node_max_size
-  }
-
-  update_config {
-    max_unavailable = 1
-  }
-
-  labels = {
-    role = "system"
-  }
-
-  # Taints to ensure only system pods run on these nodes
-  taint {
-    key    = "CriticalAddonsOnly"
-    value  = "true"
-    effect = "NO_SCHEDULE"
-  }
-
-  tags = merge(
-    var.tags,
-    {
-      Name = "${var.cluster_name}-system-ng"
-    }
-  )
-
-  depends_on = [
-    var.node_role_arn
-  ]
-}
 
 # EKS Add-ons
 resource "aws_eks_addon" "vpc_cni" {
@@ -127,7 +86,7 @@ resource "aws_eks_addon" "coredns" {
   tags = var.tags
 
   depends_on = [
-    aws_eks_node_group.system
+    aws_eks_node_group.application
   ]
 }
 
@@ -152,6 +111,6 @@ resource "aws_eks_addon" "ebs_csi_driver" {
   tags = var.tags
 
   depends_on = [
-    aws_eks_node_group.system
+    aws_eks_node_group.application
   ]
 }

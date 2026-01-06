@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: payment-worker
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "finpay.labels" . | nindent 4 }}
+    app: payment-worker
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: payment-worker

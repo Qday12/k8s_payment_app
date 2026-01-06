@@ -3,9 +3,6 @@ resource "aws_secretsmanager_secret" "db_credentials" {
   name        = "${var.project_name}/database/credentials"
   description = "Database credentials for ${var.project_name}"
 
-  # Note: Automatic rotation requires a Lambda function to be configured separately
-  # See: https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html
-
   tags = merge(
     var.tags,
     {
@@ -28,7 +25,7 @@ resource "aws_secretsmanager_secret_version" "db_credentials" {
   })
 }
 
-# KMS Key for encrypting secrets (optional but recommended)
+# KMS Key for encrypting secrets
 resource "aws_kms_key" "secrets" {
   count = var.create_kms_key ? 1 : 0
 
@@ -53,8 +50,9 @@ resource "aws_kms_alias" "secrets" {
 
 # Application Configuration Secret (for other app configs)
 resource "aws_secretsmanager_secret" "app_config" {
-  name        = "${var.project_name}/app/config"
-  description = "Application configuration for ${var.project_name}"
+  name                    = "${var.project_name}/app/config"
+  description             = "Application configuration for ${var.project_name}"
+  recovery_window_in_days = 0
 
   tags = merge(
     var.tags,

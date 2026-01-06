@@ -16,8 +16,7 @@ resource "aws_db_instance" "main" {
   storage_type      = var.storage_type
   storage_encrypted = true
   # IOPS can only be specified for storage >= 400GB
-  # GP3 provides 3000 IOPS baseline by default for any size
-  iops = var.storage_type == "gp3" && var.allocated_storage >= 400 ? var.iops : null
+  iops = var.iops
 
   db_name  = var.database_name
   username = var.master_username

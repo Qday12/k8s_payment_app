@@ -34,10 +34,6 @@ output "application_node_group_id" {
   value       = aws_eks_node_group.application.id
 }
 
-output "system_node_group_id" {
-  description = "ID of system node group"
-  value       = aws_eks_node_group.system.id
-}
 
 output "cluster_security_group_id" {
   description = "Security group ID attached to the EKS cluster"

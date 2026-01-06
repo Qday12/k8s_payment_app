@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-worker
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "finpay.labels" . | nindent 4 }}
+    app: payment-worker
+spec:
+  replicas: {{ .Values.paymentWorker.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: payment-worker
+  template:
+    metadata:
+      labels:
+        {{- include "finpay.labels" . | nindent 8 }}
+        app: payment-worker
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      nodeSelector:
+        node-group: application
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: payment-worker
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: payment-worker
+          image: {{ .Values.paymentWorker.image.repository }}:{{ .Values.paymentWorker.image.tag }}
+          imagePullPolicy: {{ .Values.paymentWorker.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8090
+          env:
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: finpay-config
+                  key: APP_ENV
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: finpay-config
+                  key: LOG_LEVEL
+            - name: PAYMENT_API_BASE_URL
+              value: http://payment-api:8080
+            - name: PAYMENT_WORKER_PORT
+              value: "8090"
+            - name: WORKER_CPU_LOAD_MS
+              value: "300"
+            # JAVA_OPTS required for readOnlyRootFilesystem: true
+            # - java.io.tmpdir=/tmp: Use mounted emptyDir for temp files
+            # - --add-opens: Allow Tomcat to access internal Java modules (Java 17+ restriction)
+            - name: JAVA_OPTS
+              value: "-Djava.io.tmpdir=/tmp --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.rmi/sun.rmi.transport=ALL-UNNAMED"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8090
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/ready
+              port: 8090
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: {{ .Values.paymentWorker.resources.requests.cpu }}
+              memory: {{ .Values.paymentWorker.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.paymentWorker.resources.limits.cpu }}
+              memory: {{ .Values.paymentWorker.resources.limits.memory }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp #readOnlyRootFilesystem: true
+      volumes:
+        - name: tmp
+          emptyDir: {}

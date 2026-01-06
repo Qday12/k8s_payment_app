@@ -3,13 +3,6 @@ variable "project_name" {
   type        = string
 }
 
-variable "rotation_days" {
-  description = "Number of days between automatic secret rotations (requires Lambda function configuration)"
-  type        = number
-  default     = 90
-  # Note: This variable is kept for future use when rotation Lambda is implemented
-}
-
 variable "create_kms_key" {
   description = "Create a KMS key for secrets encryption"
   type        = bool
