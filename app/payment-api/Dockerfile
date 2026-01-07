@@ -31,7 +31,7 @@ RUN addgroup -g 1001 appgroup && \
 WORKDIR /app
 
 # Copy JAR from build stage
-COPY --from=build /build/target/payment-api-*.jar app.jar
+COPY --from=build /build/target/payment-api-1.0.0.jar app.jar
 
 RUN chown appuser:appgroup app.jar
 
