@@ -10,8 +10,8 @@ ingress:
 
 iam:
   # IAM Role ARNs for Service Accounts (set these from Terraform outputs)
-  paymentApiRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-api-role-prod"
-  paymentWorkerRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-worker-role-prod"
+  paymentApiRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-api-role"
+  paymentWorkerRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-worker-role"
 
 # Production Configuration
 config:

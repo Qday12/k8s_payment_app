@@ -137,7 +137,7 @@ variable "rds_backup_retention_period" {
 variable "rds_deletion_protection" {
   description = "Enable deletion protection"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "rds_skip_final_snapshot" {
@@ -163,7 +163,7 @@ variable "create_kms_key" {
 variable "payment_namespace" {
   description = "Kubernetes namespace for payment applications"
   type        = string
-  default     = "payment"
+  default     = "prod"
 }
 
 variable "payment_api_base_url" {

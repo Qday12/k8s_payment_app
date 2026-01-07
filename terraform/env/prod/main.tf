@@ -154,6 +154,7 @@ module "iam_irsa" {
   region                  = var.aws_region
   account_id              = data.aws_caller_identity.current.account_id
   enable_irsa             = true
+  #payment_namespace       = "prod"
   cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
   payment_namespace       = var.payment_namespace
   db_secret_arn           = module.secrets.db_credentials_secret_arn

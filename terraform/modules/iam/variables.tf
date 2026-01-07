@@ -33,7 +33,7 @@ variable "cluster_oidc_issuer_url" {
 variable "payment_namespace" {
   description = "Kubernetes namespace for payment applications"
   type        = string
-  default     = "payment"
+  default     = ""
 }
 
 variable "db_secret_arn" {
