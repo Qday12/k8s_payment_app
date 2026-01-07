@@ -50,11 +50,6 @@ spec:
                 configMapKeyRef:
                   name: finpay-config
                   key: APP_ENV
-            - name: LOG_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: finpay-config
-                  key: LOG_LEVEL
             - name: PAYMENT_API_BASE_URL
               value: http://payment-api:8080
             - name: PAYMENT_WORKER_PORT

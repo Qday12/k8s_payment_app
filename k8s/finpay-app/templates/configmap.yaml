@@ -7,5 +7,4 @@ metadata:
     {{- include "finpay.labels" . | nindent 4 }}
 data:
   APP_ENV: {{ .Values.config.appEnv }}
-  LOG_LEVEL: {{ .Values.config.logLevel }}
   DB_URL: {{ .Values.config.dbUrl }}

@@ -61,7 +61,7 @@ ingress:
 
 # ConfigMap Configuration
 config:
-  appEnv: production
+  appEnv: prod
   logLevel: INFO
   dbUrl: ""
 

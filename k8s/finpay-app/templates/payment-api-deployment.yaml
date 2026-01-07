@@ -51,11 +51,6 @@ spec:
                 configMapKeyRef:
                   name: finpay-config
                   key: APP_ENV
-            - name: LOG_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: finpay-config
-                  key: LOG_LEVEL
             - name: PAYMENT_DB_URL
               valueFrom:
                 configMapKeyRef:
@@ -86,7 +81,6 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
-          # NOTE: Spring Boot Actuator docs are misleading - /actuator/ready doesn't exist
           # The correct endpoint is /actuator/health/readiness (not /actuator/ready)
           readinessProbe:
             httpGet:

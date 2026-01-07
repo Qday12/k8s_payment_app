@@ -113,7 +113,7 @@ variable "rds_instance_class" {
 variable "rds_allocated_storage" {
   description = "Allocated storage in GB"
   type        = number
-  default     = 100
+  default     = 20
 }
 
 variable "rds_storage_type" {
@@ -181,7 +181,7 @@ variable "payment_worker_base_url" {
 variable "worker_cpu_load_ms" {
   description = "CPU load duration in milliseconds for worker"
   type        = number
-  default     = 2000
+  default     = 300
 }
 
 # CloudWatch Variables

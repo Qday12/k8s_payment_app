@@ -23,6 +23,8 @@ output "oidc_provider_arn" {
   value       = var.enable_irsa ? aws_iam_openid_connect_provider.eks[0].arn : ""
 }
 
+
+
 output "payment_api_role_arn" {
   description = "ARN of payment-api service account IAM role"
   value       = var.enable_irsa ? aws_iam_role.payment_api[0].arn : ""

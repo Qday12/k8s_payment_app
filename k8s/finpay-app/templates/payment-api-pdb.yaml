@@ -1,3 +1,4 @@
+# Prevents Kubernetes from evicting all pods at once during node maintenance
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
