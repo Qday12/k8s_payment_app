@@ -22,6 +22,7 @@ spec:
         {{- include "finpay.labels" . | nindent 8 }}
         app: payment-worker
     spec:
+      serviceAccountName: payment-worker
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
@@ -73,9 +74,11 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
+          # NOTE: Spring Boot Actuator docs are misleading - /actuator/ready doesn't exist
+          # The correct endpoint is /actuator/health/readiness (not /actuator/ready)
           readinessProbe:
             httpGet:
-              path: /actuator/ready
+              path: /actuator/health/readiness
               port: 8090
             initialDelaySeconds: 20
             periodSeconds: 5

@@ -5,8 +5,13 @@ ingress:
   # For production HTTPS, create ACM certificate first (see README)
   certificateArn: ""
   # Public subnet IDs from Terraform outputs
-  subnets: "subnet-0970c2e679a92456a,subnet-0fbb04d83b70ce3e7"
+  subnets: "subnet-0471132c201c5b272,subnet-001d55534c7a83c86"
 
+
+iam:
+  # IAM Role ARNs for Service Accounts (set these from Terraform outputs)
+  paymentApiRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-api-role-prod"
+  paymentWorkerRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-worker-role-prod"
 
 # Production Configuration
 config:

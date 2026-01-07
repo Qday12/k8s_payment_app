@@ -6,8 +6,6 @@ metadata:
   labels:
     {{- include "finpay.labels" . | nindent 4 }}
     app: payment-api
-  annotations:
-    eks.amazonaws.com/role-arn: {{ .Values.iam.paymentApiRoleArn }}
 
 spec:
   replicas: {{ .Values.paymentApi.replicaCount }}
@@ -25,6 +23,7 @@ spec:
         {{- include "finpay.labels" . | nindent 8 }}
         app: payment-api
     spec:
+      serviceAccountName: payment-api
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
@@ -87,9 +86,11 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
+          # NOTE: Spring Boot Actuator docs are misleading - /actuator/ready doesn't exist
+          # The correct endpoint is /actuator/health/readiness (not /actuator/ready)
           readinessProbe:
             httpGet:
-              path: /actuator/ready
+              path: /actuator/health/readiness
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 5
