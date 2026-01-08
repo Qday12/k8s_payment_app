@@ -83,6 +83,12 @@ output "alb_controller_role_arn" {
   value       = module.iam_irsa.alb_controller_role_arn
 }
 
+output "external_secrets_role_arn" {
+  description = "ARN of External Secrets Operator service account role"
+  value       = module.iam_irsa.external_secrets_role_arn
+}
+
+
 # CloudWatch Outputs
 output "cloudwatch_dashboard_name" {
   description = "CloudWatch dashboard name"

@@ -8,6 +8,8 @@ global:
 iam:
   paymentApiRoleArn: arn:aws:iam::408502715963:role/finpay-payment-api-role
   paymentWorkerRoleArn: arn:aws:iam::408502715963:role/finpay-payment-worker-role
+  externalSecretsRoleArn: arn:aws:iam::408502715963:role/finpay-external-secrets-role
+
 # Payment API Configuration
 paymentApi:
   replicaCount: 2
@@ -59,13 +61,21 @@ ingress:
   certificateArn: ""
   subnets: ""
 
+alb_controller:
+  clusterName: finpay-production-eks
+  region: eu-central-1
+
+# External Secrets Configuration
+externalSecrets:
+  secretStoreName: aws-secrets-manager
+  secretPrefix: finpay
+
 # ConfigMap Configuration
 config:
   appEnv: prod
-  logLevel: INFO
   dbUrl: ""
 
 # Secret Configuration
-secret:
-  dbUser: ""
-  dbPassword: ""
+#secret:
+#  dbUser: ""
+#  dbPassword: ""

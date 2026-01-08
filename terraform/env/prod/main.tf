@@ -144,7 +144,7 @@ module "cloudwatch" {
   depends_on = [module.eks, module.rds]
 }
 
-# IAM Module (Phase 2: Enable IRSA after EKS is created)
+# IAM Module
 # This creates IRSA roles for service accounts
 module "iam_irsa" {
   source = "../../modules/iam"
@@ -162,4 +162,20 @@ module "iam_irsa" {
   tags = local.common_tags
 
   depends_on = [module.eks, module.secrets]
+}
+
+# K8s Addons Module
+# Installs cluster-wide infrastructure components (ALB Controller, External Secrets)
+module "k8s_addons" {
+  source = "../../modules/k8s-addons"
+
+  cluster_name                = local.cluster_name
+  cluster_endpoint            = module.eks.cluster_endpoint
+  region                      = var.aws_region
+  vpc_id                      = module.vpc.vpc_id
+  alb_controller_role_arn     = module.iam_irsa.alb_controller_role_arn
+  external_secrets_role_arn   = module.iam_irsa.external_secrets_role_arn
+  payment_namespace           = var.payment_namespace
+
+  depends_on = [module.eks, module.iam_irsa]
 }

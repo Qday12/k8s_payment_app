@@ -533,3 +533,78 @@ resource "aws_iam_role_policy_attachment" "alb_controller" {
   policy_arn = aws_iam_policy.alb_controller[0].arn
   role       = aws_iam_role.alb_controller[0].name
 }
+
+# External Secrets Operator IAM Role
+resource "aws_iam_role" "external_secrets" {
+  count = var.enable_irsa ? 1 : 0
+  name  = "${var.project_name}-external-secrets-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.eks[0].arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:${var.payment_namespace}:external-secrets"
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:aud" = "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.project_name}-external-secrets-role"
+    }
+  )
+}
+
+# Policy for External Secrets Operator to read from Secrets Manager
+resource "aws_iam_policy" "external_secrets" {
+  count       = var.enable_irsa ? 1 : 0
+  name        = "${var.project_name}-external-secrets-policy"
+  description = "Policy for External Secrets Operator to access AWS Secrets Manager"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:ListSecrets"
+        ]
+        Resource = "arn:aws:secretsmanager:${var.region}:${var.account_id}:secret:${var.project_name}/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "kms:ViaService" = "secretsmanager.${var.region}.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "external_secrets" {
+  count      = var.enable_irsa ? 1 : 0
+  policy_arn = aws_iam_policy.external_secrets[0].arn
+  role       = aws_iam_role.external_secrets[0].name
+}

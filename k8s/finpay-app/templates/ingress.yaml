@@ -6,8 +6,7 @@ metadata:
   labels:
     {{- include "finpay.labels" . | nindent 4 }}
   annotations:
-    kubernetes.io/ingress.class: alb
-
+    # kubernetes.io/ingress.class: alb  # Deprecated - use spec.ingressClassName instead
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     {{- if .Values.ingress.certificateArn }}

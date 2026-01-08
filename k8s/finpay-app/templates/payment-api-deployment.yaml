@@ -59,12 +59,12 @@ spec:
             - name: PAYMENT_DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: finpay-db-secret
+                  name: payment-app-secrets
                   key: DB_USER
             - name: PAYMENT_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: finpay-db-secret
+                  name: payment-app-secrets
                   key: DB_PASSWORD
             - name: PAYMENT_WORKER_BASE_URL
               value: http://payment-worker:8090

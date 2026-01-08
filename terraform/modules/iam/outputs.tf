@@ -39,3 +39,8 @@ output "alb_controller_role_arn" {
   description = "ARN of ALB controller service account IAM role"
   value       = var.enable_irsa ? aws_iam_role.alb_controller[0].arn : ""
 }
+
+output "external_secrets_role_arn" {
+  description = "ARN of External Secrets Operator service account IAM role"
+  value       = var.enable_irsa ? aws_iam_role.external_secrets[0].arn : ""
+}

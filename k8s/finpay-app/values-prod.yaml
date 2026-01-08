@@ -5,23 +5,24 @@ ingress:
   # For production HTTPS, create ACM certificate first (see README)
   certificateArn: ""
   # Public subnet IDs from Terraform outputs
-  subnets: "subnet-0471132c201c5b272,subnet-001d55534c7a83c86"
+  subnets: "subnet-0f05bdb9c8c129307,subnet-059d01a82236eebaa"
 
 
 iam:
-  # IAM Role ARNs for Service Accounts (set these from Terraform outputs)
+  # IAM Role ARNs for Service Accounts
   paymentApiRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-api-role"
   paymentWorkerRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-worker-role"
+  externalSecretsRoleArn: arn:aws:iam::408502715963:role/finpay-external-secrets-role"
 
 # Production Configuration
 config:
   dbUrl: "jdbc:postgresql://finpay-db.c144aqq2u663.eu-central-1.rds.amazonaws.com:5432/paymentdb"
 
 # IMPORTANT: In production, use AWS Secrets Manager or External Secrets Operator
-secret:
+#secret:
   # Set these via: --set secret.dbUser=xxx --set secret.dbPassword=xxx
-  dbUser: ""
-  dbPassword: ""
+#  dbUser: ""
+#  dbPassword: ""
 
 # Enable resource quotas in production
 resourceQuota:
