@@ -1,6 +1,8 @@
 # EKS Cluster Role
+# Only created when enable_irsa = false (first module call)
 resource "aws_iam_role" "eks_cluster" {
-  name = "${var.project_name}-eks-cluster-role"
+  count = var.enable_irsa ? 0 : 1
+  name  = "${var.project_name}-eks-cluster-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -25,20 +27,24 @@ resource "aws_iam_role" "eks_cluster" {
 
 # Attach required policies to EKS Cluster Role
 resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+  count      = var.enable_irsa ? 0 : 1
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks_cluster.name
+  role       = aws_iam_role.eks_cluster[0].name
 }
 
 resource "aws_iam_role_policy_attachment" "eks_vpc_resource_controller" {
+  count      = var.enable_irsa ? 0 : 1
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.eks_cluster.name
+  role       = aws_iam_role.eks_cluster[0].name
 }
 
 ##################################################################################
 
 # EKS Node Role
+# Only created when enable_irsa = false (first module call)
 resource "aws_iam_role" "eks_nodes" {
-  name = "${var.project_name}-eks-node-role"
+  count = var.enable_irsa ? 0 : 1
+  name  = "${var.project_name}-eks-node-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -63,22 +69,26 @@ resource "aws_iam_role" "eks_nodes" {
 
 # Attach required policies to EKS Node Role
 resource "aws_iam_role_policy_attachment" "eks_worker_node_policy" {
+  count      = var.enable_irsa ? 0 : 1
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.eks_nodes.name
+  role       = aws_iam_role.eks_nodes[0].name
 }
 
 resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
+  count      = var.enable_irsa ? 0 : 1
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.eks_nodes.name
+  role       = aws_iam_role.eks_nodes[0].name
 }
 
 resource "aws_iam_role_policy_attachment" "eks_container_registry_policy" {
+  count      = var.enable_irsa ? 0 : 1
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.eks_nodes.name
+  role       = aws_iam_role.eks_nodes[0].name
 }
 
 # CloudWatch logs policy for nodes
 resource "aws_iam_policy" "node_cloudwatch_logs" {
+  count       = var.enable_irsa ? 0 : 1
   name        = "${var.project_name}-node-cloudwatch-logs"
   description = "Allow EKS nodes to write logs to CloudWatch"
 
@@ -102,8 +112,9 @@ resource "aws_iam_policy" "node_cloudwatch_logs" {
 }
 
 resource "aws_iam_role_policy_attachment" "node_cloudwatch_logs" {
-  policy_arn = aws_iam_policy.node_cloudwatch_logs.arn
-  role       = aws_iam_role.eks_nodes.name
+  count      = var.enable_irsa ? 0 : 1
+  policy_arn = aws_iam_policy.node_cloudwatch_logs[0].arn
+  role       = aws_iam_role.eks_nodes[0].name
 }
 
 ###################################################################################
@@ -129,7 +140,8 @@ resource "aws_iam_openid_connect_provider" "eks" {
   )
 }
 
-# IRSA Role for payment-api (Secrets Manager read access)
+# IRSA Role for payment-api
+# Note: Secrets are now accessed via External Secrets Operator, not directly by payment-api
 resource "aws_iam_role" "payment_api" {
   count = var.enable_irsa ? 1 : 0
   name  = "${var.project_name}-payment-api-role"
@@ -159,35 +171,6 @@ resource "aws_iam_role" "payment_api" {
       Name = "${var.project_name}-payment-api-role"
     }
   )
-}
-
-# Policy for payment-api to read secrets
-resource "aws_iam_policy" "payment_api_secrets" {
-  count       = var.enable_irsa ? 1 : 0
-  name        = "${var.project_name}-payment-api-secrets"
-  description = "Allow payment-api to read database credentials from Secrets Manager"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret"
-        ]
-        Resource = var.db_secret_arn
-      }
-    ]
-  })
-
-  tags = var.tags
-}
-
-resource "aws_iam_role_policy_attachment" "payment_api_secrets" {
-  count      = var.enable_irsa ? 1 : 0
-  policy_arn = aws_iam_policy.payment_api_secrets[0].arn
-  role       = aws_iam_role.payment_api[0].name
 }
 
 # IRSA Role for payment-worker (CloudWatch metrics write)
@@ -464,12 +447,6 @@ resource "aws_iam_policy" "alb_controller" {
           "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
           "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
         ]
-        Condition = {
-          Null = {
-            "aws:RequestTag/elbv2.k8s.aws/cluster"  = "true"
-            "aws:ResourceTag/elbv2.k8s.aws/cluster" = "false"
-          }
-        }
       },
       {
         Effect = "Allow"

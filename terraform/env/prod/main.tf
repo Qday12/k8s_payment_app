@@ -77,6 +77,31 @@ module "eks" {
   depends_on = [module.iam, module.security_groups]
 }
 
+##########################################################
+# Additional Security Group Rule
+# Allow RDS access from EKS cluster-managed security group
+##########################################################
+
+# IMPORTANT: EKS automatically creates a cluster-managed security group
+# and assigns it to worker nodes. This rule allows pods to access RDS.
+resource "aws_vpc_security_group_ingress_rule" "rds_from_eks_cluster_sg" {
+  security_group_id            = module.security_groups.rds_security_group_id
+  description                  = "Allow PostgreSQL from EKS cluster security group"
+  referenced_security_group_id = module.eks.cluster_security_group_id
+  from_port                    = 5432
+  to_port                      = 5432
+  ip_protocol                  = "tcp"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.project_name}-rds-from-eks-cluster-sg"
+    }
+  )
+
+  depends_on = [module.eks, module.security_groups]
+}
+
 # RDS Module
 module "rds" {
   source = "../../modules/rds"

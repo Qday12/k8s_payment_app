@@ -12,7 +12,7 @@ iam:
   # IAM Role ARNs for Service Accounts
   paymentApiRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-api-role"
   paymentWorkerRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-worker-role"
-  externalSecretsRoleArn: arn:aws:iam::408502715963:role/finpay-external-secrets-role"
+  externalSecretsRoleArn: "arn:aws:iam::408502715963:role/finpay-external-secrets-role"
 
 # Production Configuration
 config:

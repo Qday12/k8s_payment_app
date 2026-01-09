@@ -161,20 +161,8 @@ resource "aws_vpc_security_group_ingress_rule" "rds_from_eks" {
   ip_protocol                  = "tcp"
 }
 
-# RDS Ingress - PostgreSQL from EKS cluster security group
-# CRITICAL FIX: EKS automatically creates and assigns a cluster-managed security group
-# to worker nodes when no explicit security group is configured in the node group.
-# This rule allows RDS access from pods running on nodes using the cluster SG.
-# The cluster SG ID must be passed as a variable after EKS cluster creation.
-resource "aws_vpc_security_group_ingress_rule" "rds_from_eks_cluster_sg" {
-  count = var.eks_cluster_security_group_id != null ? 1 : 0
-
-  security_group_id            = aws_security_group.rds.id
-  description                  = "Allow PostgreSQL from EKS cluster-managed security group"
-  referenced_security_group_id = var.eks_cluster_security_group_id
-  from_port                    = 5432
-  to_port                      = 5432
-  ip_protocol                  = "tcp"
-}
+# NOTE: RDS ingress from EKS cluster-managed security group is created
+# as a standalone resource in prod/main.tf due to circular dependency.
+# The cluster SG is only available after EKS cluster creation.
 
 # RDS has no egress rules (restrictive by default)

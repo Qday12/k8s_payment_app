@@ -37,7 +37,7 @@ secrets_rotation_days = 90
 create_kms_key        = false
 
 # Application Configuration
-payment_namespace       = "payment"
+payment_namespace       = "prod"
 payment_api_base_url    = "http://payment-api:8080"
 payment_worker_base_url = "http://payment-worker:8090"
 worker_cpu_load_ms      = 2000

@@ -13,12 +13,6 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "eks_cluster_security_group_id" {
-  description = "EKS cluster-managed security group ID (created by EKS, not Terraform). Required for RDS access from pods."
-  type        = string
-  default     = null
-}
-
 variable "tags" {
   description = "Common tags to apply to all resources"
   type        = map(string)

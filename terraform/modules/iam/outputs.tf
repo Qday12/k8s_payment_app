@@ -1,21 +1,21 @@
 output "eks_cluster_role_arn" {
   description = "ARN of EKS cluster IAM role"
-  value       = aws_iam_role.eks_cluster.arn
+  value       = var.enable_irsa ? null : aws_iam_role.eks_cluster[0].arn
 }
 
 output "eks_cluster_role_name" {
   description = "Name of EKS cluster IAM role"
-  value       = aws_iam_role.eks_cluster.name
+  value       = var.enable_irsa ? null : aws_iam_role.eks_cluster[0].name
 }
 
 output "eks_nodes_role_arn" {
   description = "ARN of EKS nodes IAM role"
-  value       = aws_iam_role.eks_nodes.arn
+  value       = var.enable_irsa ? null : aws_iam_role.eks_nodes[0].arn
 }
 
 output "eks_nodes_role_name" {
   description = "Name of EKS nodes IAM role"
-  value       = aws_iam_role.eks_nodes.name
+  value       = var.enable_irsa ? null : aws_iam_role.eks_nodes[0].name
 }
 
 output "oidc_provider_arn" {
