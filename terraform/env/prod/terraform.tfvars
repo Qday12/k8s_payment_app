@@ -25,11 +25,11 @@ database_name               = "paymentdb"
 db_master_username          = "dbadmin"
 rds_engine_version          = "16"
 rds_instance_class          = "db.t3.medium"
-rds_allocated_storage       = 100
+rds_allocated_storage       = 20
 rds_storage_type            = "gp3"
 rds_multi_az                = true
 rds_backup_retention_period = 7
-rds_deletion_protection     = true
+rds_deletion_protection     = false
 rds_skip_final_snapshot     = false
 
 # Secrets Manager
