@@ -1,0 +1,30 @@
+
+global:
+  namespace: dev
+  environment: dev
+
+# Development Ingress Configuration
+ingress:
+  # ACM certificate ARN - OPTIONAL: Leave empty for HTTP-only (testing)
+  # For development HTTPS, create ACM certificate first (see README)
+  certificateArn: ""
+  # Public subnet IDs from Terraform outputs
+  subnets: "subnet-0dd0a9d64542f64a6,subnet-04bc78d0c982ddc55"
+
+
+iam:
+  # IAM Role ARNs for Service Accounts
+  paymentApiRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-api-role"
+  paymentWorkerRoleArn: "arn:aws:iam::408502715963:role/finpay-payment-worker-role"
+  externalSecretsRoleArn: "arn:aws:iam::408502715963:role/finpay-external-secrets-role"
+
+# Production Configuration
+config:
+  dbUrl: "jdbc:postgresql://finpay-db.c144aqq2u663.eu-central-1.rds.amazonaws.com:5432/paymentdb"
+
+#  dbUser: ""
+#  dbPassword: ""
+
+# Enable resource quotas in production
+resourceQuota:
+  enabled: true

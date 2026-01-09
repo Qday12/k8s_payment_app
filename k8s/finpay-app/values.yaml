@@ -75,7 +75,3 @@ config:
   appEnv: prod
   dbUrl: ""
 
-# Secret Configuration
-#secret:
-#  dbUser: ""
-#  dbPassword: ""

@@ -1,4 +1,8 @@
 
+global:
+  namespace: prod
+  environment: prod
+
 # Production Ingress Configuration
 ingress:
   # ACM certificate ARN - OPTIONAL: Leave empty for HTTP-only (testing)

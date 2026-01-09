@@ -161,8 +161,3 @@ resource "aws_vpc_security_group_ingress_rule" "rds_from_eks" {
   ip_protocol                  = "tcp"
 }
 
-# NOTE: RDS ingress from EKS cluster-managed security group is created
-# as a standalone resource in prod/main.tf due to circular dependency.
-# The cluster SG is only available after EKS cluster creation.
-
-# RDS has no egress rules (restrictive by default)

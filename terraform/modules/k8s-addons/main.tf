@@ -1,15 +1,10 @@
-# K8s Addons Module
-# Installs cluster-wide Kubernetes infrastructure components
 
-#######################################################
 # AWS Load Balancer Controller
-#######################################################
-
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
-  version    = "1.6.2" # Update to latest stable version as needed
+  version    = "1.6.2" 
   namespace  = "kube-system"
 
   set {
@@ -65,27 +60,20 @@ resource "helm_release" "aws_load_balancer_controller" {
   depends_on = [var.cluster_endpoint]
 }
 
-#######################################################
-# Wait for ALB Controller Webhook to be ready
-#######################################################
 
-# The ALB Controller creates a webhook that can interfere with other resources
-# Wait 60 seconds for the webhook to become fully operational
+# Wait for ALB Controller Webhook to be ready
 resource "time_sleep" "wait_for_alb_webhook" {
   depends_on = [helm_release.aws_load_balancer_controller]
 
   create_duration = "60s"
 }
 
-#######################################################
 # External Secrets Operator
-#######################################################
-
 resource "helm_release" "external_secrets" {
   name       = "external-secrets"
   repository = "https://charts.external-secrets.io"
   chart      = "external-secrets"
-  version    = "0.9.13" # Update to latest stable version as needed
+  version    = "0.9.13"
   namespace  = "external-secrets-system"
 
   create_namespace = true
@@ -101,7 +89,7 @@ resource "helm_release" "external_secrets" {
     value = "9443"
   }
 
-  # Resource limits (optional but recommended)
+  # Resource limits
   set {
     name  = "resources.requests.cpu"
     value = "10m"
