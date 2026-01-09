@@ -69,18 +69,26 @@ ALB_URL=$(kubectl get ingress payment-api -n prod -o jsonpath='{.status.loadBala
 curl -H "Host: api.finpay.com" http://$ALB_URL/actuator/health
 
 # Test payment endpoint
-curl -X POST -H "Host: api.finpay.com" -H "Content-Type: application/json" \
-  http://$ALB_URL/payments \
-  -d '{"amount": 100.00, "currency": "USD", "description": "Test payment"}'
+curl -X POST http://$ALB_URL/payments \
+  -H "Host: api.finpay.com" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amountInCents": 10000,
+    "currency": "USD",
+    "customerId": "cust_123"
+  }'
+
+'
+curl http://$ALB_URL/payments/[ID] \
+  -H "Host: api.finpay.com"
+
 ```
 
 # Destroy Guide
 
-## Destroy Order (Important!)
-
 Follow this order to avoid dependency errors:
 
-### 1. Delete Helm Application
+## 1. Delete Helm Application
 
 ```bash
 # Delete application
@@ -93,7 +101,7 @@ aws elbv2 describe-load-balancers --region eu-central-1 | grep k8s-prod
 kubectl delete namespace prod
 ```
 
-### 2. Destroy Terraform Infrastructure
+## 2. Destroy Terraform Infrastructure
 
 ```bash
 cd terraform/env/prod
@@ -102,7 +110,7 @@ cd terraform/env/prod
 terraform destroy
 ```
 
-### 3. Destroy Bootstrap (Optional)
+## 3. Destroy Bootstrap (Optional)
 
 ```bash
 # Delete ECR and IAM
