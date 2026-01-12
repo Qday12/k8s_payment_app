@@ -114,3 +114,34 @@ output "rds_security_group_id" {
   description = "RDS security group ID"
   value       = module.security_groups.rds_security_group_id
 }
+
+# EC2 Database Outputs
+output "db_vm_instance_id" {
+  description = "EC2 database instance ID"
+  value       = module.ec2_database.instance_id
+}
+
+output "db_vm_private_ip" {
+  description = "EC2 database private IP"
+  value       = module.ec2_database.instance_private_ip
+}
+
+output "db_vm_endpoint" {
+  description = "EC2 database connection endpoint (host:port)"
+  value       = module.ec2_database.db_endpoint
+}
+
+output "db_vm_security_group_id" {
+  description = "EC2 database security group ID"
+  value       = module.ec2_database.security_group_id
+}
+
+output "db_vm_data_volume_id" {
+  description = "EC2 database EBS data volume ID"
+  value       = module.ec2_database.data_volume_id
+}
+
+output "connect_to_db_vm" {
+  description = "Command to connect to DB VM via SSM Session Manager"
+  value       = "aws ssm start-session --target ${module.ec2_database.instance_id} --region ${var.aws_region}"
+}

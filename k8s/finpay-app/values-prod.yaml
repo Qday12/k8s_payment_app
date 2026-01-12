@@ -20,7 +20,8 @@ iam:
 
 # Production Configuration
 config:
-  dbUrl: "jdbc:postgresql://finpay-db.c144aqq2u663.eu-central-1.rds.amazonaws.com:5432/paymentdb"
+  #dbUrl: "jdbc:postgresql://finpay-db.c144aqq2u663.eu-central-1.rds.amazonaws.com:5432/paymentdb"
+  dbUrl: "jdbc:postgresql://10.0.20.235:5432/paymentdb"
 
 #  dbUser: ""
 #  dbPassword: ""

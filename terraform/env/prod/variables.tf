@@ -196,3 +196,34 @@ variable "cloudwatch_alarm_email" {
   type        = string
   default     = ""
 }
+
+# EC2 Database Variables (for migration from RDS)
+variable "db_vm_instance_type" {
+  description = "EC2 instance type for database VM"
+  type        = string
+  default     = "t3.medium"
+}
+
+variable "db_vm_volume_size" {
+  description = "Size of EBS volume for PostgreSQL data (GB)"
+  type        = number
+  default     = 50
+}
+
+variable "db_vm_volume_type" {
+  description = "EBS volume type for PostgreSQL data"
+  type        = string
+  default     = "gp3"
+}
+
+variable "postgres_version" {
+  description = "PostgreSQL version to install on VM"
+  type        = string
+  default     = "16"
+}
+
+variable "enable_rds_migration_access" {
+  description = "Enable access between RDS and VM for migration"
+  type        = bool
+  default     = true
+}

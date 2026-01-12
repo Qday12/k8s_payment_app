@@ -45,3 +45,10 @@ worker_cpu_load_ms      = 2000
 # CloudWatch Configuration
 cloudwatch_log_retention_days = 30
 cloudwatch_alarm_email        = "blazejowski19@gmail.com"
+
+# EC2 Database Configuration (for migration from RDS)
+db_vm_instance_type         = "t3.medium"
+db_vm_volume_size           = 50
+db_vm_volume_type           = "gp3"
+postgres_version            = "16"
+enable_rds_migration_access = true

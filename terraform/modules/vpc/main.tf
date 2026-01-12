@@ -165,24 +165,35 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private[count.index].id
 }
 
-# Route Table for Database Subnets
+# Route Tables for Database Subnets (one per AZ for NAT)
 resource "aws_route_table" "database" {
+  count = length(var.availability_zones)
+
   vpc_id = aws_vpc.main.id
 
   tags = merge(
     var.tags,
     {
-      Name = "${var.project_name}-database-rt"
+      Name = "${var.project_name}-database-rt-${var.availability_zones[count.index]}"
     }
   )
 }
 
-# Associate Database Subnets with Database Route Table
+# Database Route to NAT Gateway (each AZ uses its own NAT)
+resource "aws_route" "database_nat" {
+  count = length(var.availability_zones)
+
+  route_table_id         = aws_route_table.database[count.index].id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.main[count.index].id
+}
+
+# Associate Database Subnets with Database Route Tables
 resource "aws_route_table_association" "database" {
   count = length(var.availability_zones)
 
   subnet_id      = aws_subnet.database[count.index].id
-  route_table_id = aws_route_table.database.id
+  route_table_id = aws_route_table.database[count.index].id
 }
 
 # DB Subnet Group for RDS

@@ -84,6 +84,21 @@ curl http://$ALB_URL/payments/[ID] \
 
 ```
 
+```bash
+[qday@archlinux prod]$ curl -X POST http://$ALB_URL/payments   -H "Host: api.finpay.com"   -H "Content-Type: application/json"   -d '{
+    "amountInCents": 999,
+    "currency": "USD",
+    "customerId": "1"
+  }'
+{"id":"bcaf3c4c-0c37-474f-93a9-3bd02a65b401","status":"PENDING"}
+
+[qday@archlinux prod]$ 
+[qday@archlinux prod]$ curl http://$ALB_URL/payments/bcaf3c4c-0c37-474f-93a9-3bd02a65b401 \
+  -H "Host: api.finpay.com"
+{"id":"bcaf3c4c-0c37-474f-93a9-3bd02a65b401","status":"COMPLETED"}
+
+```
+
 # Destroy Guide
 
 Follow this order to avoid dependency errors:

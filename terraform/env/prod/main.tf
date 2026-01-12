@@ -183,6 +183,49 @@ module "k8s_addons" {
   depends_on = [module.eks, module.iam_irsa]
 }
 
+# EC2 Database Module (for migration from RDS to VM-based PostgreSQL)
+module "ec2_database" {
+  source = "../../modules/ec2-database"
 
+  project_name                   = var.project_name
+  vpc_id                         = module.vpc.vpc_id
+  subnet_id                      = module.vpc.database_subnet_ids[0] # First database subnet
+  availability_zone              = var.availability_zones[0]
+  instance_type                  = var.db_vm_instance_type
+  eks_nodes_security_group_id    = module.security_groups.eks_nodes_security_group_id
+  eks_cluster_security_group_id  = module.eks.cluster_security_group_id
+  rds_security_group_id          = module.security_groups.rds_security_group_id
+  enable_rds_migration_access    = var.enable_rds_migration_access
 
+  # Database configuration
+  postgres_version          = var.postgres_version
+  db_volume_size            = var.db_vm_volume_size
+  db_volume_type            = var.db_vm_volume_type
+  db_credentials_secret_arn = module.secrets.db_credentials_secret_arn
+  preserve_data_volume      = true
+
+  tags = local.common_tags
+
+  depends_on = [module.vpc, module.security_groups, module.rds, module.secrets]
+}
+
+# Additional Security Group Rule
+# Allow RDS access from EKS cluster-managed security group
+resource "aws_vpc_security_group_ingress_rule" "rds_from_eks_cluster_sg" {
+  security_group_id            = module.security_groups.rds_security_group_id
+  description                  = "Allow PostgreSQL from EKS cluster security group"
+  referenced_security_group_id = module.eks.cluster_security_group_id
+  from_port                    = 5432
+  to_port                      = 5432
+  ip_protocol                  = "tcp"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.project_name}-rds-from-eks-cluster-sg"
+    }
+  )
+
+  depends_on = [module.eks, module.security_groups]
+}
 
